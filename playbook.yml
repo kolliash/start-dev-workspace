@@ -2,6 +2,6 @@
   gather_facts: false
   connection: local
   tasks:
-    - name: Hello from Ansible Navigator
+    - name: Print Hello from Ansible
       debug:
-        msg: "Hello from ansible-navigator in DevSpaces!"
+        msg: "Hello from DevSpaces with Ansible Tools!"
