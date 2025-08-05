@@ -1,6 +1,6 @@
 schemaVersion: 2.1.0
 metadata:
-  name: ansible-check-devspace
+  name: ansible-simple-devspace
 projects:
   - name: basic-devspace
     git:
@@ -33,10 +33,10 @@ commands:
       group:
         kind: build
 
-  - id: check-ansible
+  - id: run-playbook
     exec:
       component: universal-developer-image
-      commandLine: ansible --version
+      commandLine: ansible-playbook playbook.yml -i localhost,
       workingDir: ${PROJECTS_ROOT}/basic-devspace
       group:
         kind: run
