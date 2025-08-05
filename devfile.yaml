@@ -1,6 +1,6 @@
 schemaVersion: 2.1.0
 metadata:
-  name: ansible-devspace
+  name: ansible-check-devspace
 projects:
   - name: basic-devspace
     git:
@@ -14,10 +14,17 @@ components:
       image: registry.redhat.io/devspaces/udi-rhel8:latest
       memoryLimit: 2Gi
       mountSources: true
-      args: ["tail", "-f", "/dev/null"]   # keep container alive
-      command: ["/bin/sh", "-c"]
-      volumeMounts: []
+
 commands:
+  - id: echo-test
+    exec:
+      component: universal-developer-image
+      commandLine: echo "DevSpaces is working and SSH is configured!"
+      workingDir: ${PROJECTS_ROOT}/basic-devspace
+      group:
+        kind: build
+        isDefault: true
+
   - id: install-ansible
     exec:
       component: universal-developer-image
@@ -25,34 +32,11 @@ commands:
       workingDir: ${PROJECTS_ROOT}/basic-devspace
       group:
         kind: build
-        isDefault: true
 
-  - id: create-sample-playbook
+  - id: check-ansible
     exec:
       component: universal-developer-image
-      commandLine: |
-        cat > ${PROJECTS_ROOT}/basic-devspace/hello.yml <<EOF
-        - hosts: localhost
-          gather_facts: false
-          tasks:
-            - name: Print a hello message
-              debug:
-                msg: "Hello from Ansible in Dev Spaces!"
-        EOF
-      workingDir: ${PROJECTS_ROOT}/basic-devspace
-      group:
-        kind: build
-
-  - id: run-ansible-playbook
-    exec:
-      component: universal-developer-image
-      commandLine: ansible-playbook hello.yml -i localhost,
+      commandLine: ansible --version
       workingDir: ${PROJECTS_ROOT}/basic-devspace
       group:
         kind: run
-        isDefault: true
-
-events:
-  postStart:
-    - install-ansible
-    - create-sample-playbook
