@@ -1,12 +1,13 @@
-schemaVersion: 2.2.0
+schemaVersion: 2.1.0
 metadata:
   name: basic-devspace
 projects:
-  - name: basic-devspace   
-    source:
-      type: git
-      location: ssh://git@github.com/kolliash/start-dev-workspace.git
-      branch: main
+  - name: basic-devspace
+    git:
+      remotes:
+        origin: ssh://git@github.com/kolliash/start-dev-workspace.git
+      checkoutFrom:
+        revision: main
 components:
   - name: universal-developer-image
     container:
