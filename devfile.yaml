@@ -1,6 +1,6 @@
 schemaVersion: 2.1.0
 metadata:
-  name: ansible-demo-based
+  name: ansible-tools-devspace
 projects:
   - name: basic-devspace
     git:
@@ -9,7 +9,7 @@ projects:
       checkoutFrom:
         revision: main
 components:
-  - name: ansible-demo-image
+  - name: universal-developer-image
     container:
       image: registry.redhat.io/devspaces/udi-rhel8:latest
       memoryLimit: 2Gi
@@ -18,8 +18,8 @@ components:
 commands:
   - id: echo-test
     exec:
-      component: ansible-demo-image
-      commandLine: echo "DevSpaces with Ansible tooling is working!"
+      component: universal-developer-image
+      commandLine: echo "DevSpaces is working with SSH!"
       workingDir: ${PROJECTS_ROOT}/basic-devspace
       group:
         kind: build
@@ -27,15 +27,15 @@ commands:
 
   - id: install-ansible-tools
     exec:
-      component: ansible-demo-image
-      commandLine: pip3 install --user ansible-core ansible-lint molecule ansible-navigator
+      component: universal-developer-image
+      commandLine: pip3 install --user ansible-core ansible-lint molecule yamllint
       workingDir: ${PROJECTS_ROOT}/basic-devspace
       group:
         kind: build
 
   - id: run-playbook
     exec:
-      component: ansible-demo-image
+      component: universal-developer-image
       commandLine: ansible-playbook playbook.yml -i localhost,
       workingDir: ${PROJECTS_ROOT}/basic-devspace
       group:
@@ -43,24 +43,24 @@ commands:
 
   - id: lint-playbook
     exec:
-      component: ansible-demo-image
+      component: universal-developer-image
       commandLine: ansible-lint playbook.yml || true
       workingDir: ${PROJECTS_ROOT}/basic-devspace
       group:
         kind: run
 
-  - id: nav-playbook
+  - id: yaml-lint
     exec:
-      component: ansible-demo-image
-      commandLine: ansible-navigator run playbook.yml -i localhost,
+      component: universal-developer-image
+      commandLine: yamllint playbook.yml || true
       workingDir: ${PROJECTS_ROOT}/basic-devspace
       group:
         kind: run
 
   - id: molecule-test
     exec:
-      component: ansible-demo-image
-      commandLine: molecule test || echo "No molecule scenario"
+      component: universal-developer-image
+      commandLine: molecule test || echo "No molecule scenario found"
       workingDir: ${PROJECTS_ROOT}/basic-devspace
       group:
         kind: run
