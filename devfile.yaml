@@ -1,6 +1,6 @@
 schemaVersion: 2.1.0
 metadata:
-  name: ansible-simple-devspace
+  name: ansible-demo-based
 projects:
   - name: basic-devspace
     git:
@@ -9,7 +9,7 @@ projects:
       checkoutFrom:
         revision: main
 components:
-  - name: universal-developer-image
+  - name: ansible-demo-image
     container:
       image: registry.redhat.io/devspaces/udi-rhel8:latest
       memoryLimit: 2Gi
@@ -18,25 +18,49 @@ components:
 commands:
   - id: echo-test
     exec:
-      component: universal-developer-image
-      commandLine: echo "DevSpaces is working and SSH is configured!"
+      component: ansible-demo-image
+      commandLine: echo "DevSpaces with Ansible tooling is working!"
       workingDir: ${PROJECTS_ROOT}/basic-devspace
       group:
         kind: build
         isDefault: true
 
-  - id: install-ansible
+  - id: install-ansible-tools
     exec:
-      component: universal-developer-image
-      commandLine: pip3 install --user ansible-core
+      component: ansible-demo-image
+      commandLine: pip3 install --user ansible-core ansible-lint molecule ansible-navigator
       workingDir: ${PROJECTS_ROOT}/basic-devspace
       group:
         kind: build
 
   - id: run-playbook
     exec:
-      component: universal-developer-image
+      component: ansible-demo-image
       commandLine: ansible-playbook playbook.yml -i localhost,
+      workingDir: ${PROJECTS_ROOT}/basic-devspace
+      group:
+        kind: run
+
+  - id: lint-playbook
+    exec:
+      component: ansible-demo-image
+      commandLine: ansible-lint playbook.yml || true
+      workingDir: ${PROJECTS_ROOT}/basic-devspace
+      group:
+        kind: run
+
+  - id: nav-playbook
+    exec:
+      component: ansible-demo-image
+      commandLine: ansible-navigator run playbook.yml -i localhost,
+      workingDir: ${PROJECTS_ROOT}/basic-devspace
+      group:
+        kind: run
+
+  - id: molecule-test
+    exec:
+      component: ansible-demo-image
+      commandLine: molecule test || echo "No molecule scenario"
       workingDir: ${PROJECTS_ROOT}/basic-devspace
       group:
         kind: run
